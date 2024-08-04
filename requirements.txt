@@ -3,5 +3,7 @@ pandas
 scikit-learn
 matplotlib
 flask
+ipykernel
+seaborn
 
 -e .
