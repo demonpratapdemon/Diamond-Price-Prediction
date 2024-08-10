@@ -5,6 +5,8 @@ import pandas as pd
 from src.exception import CustomException
 from src.logger import logging
 
+from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+
 
 def save_object(file_path, obj):
     try:
@@ -16,4 +18,31 @@ def save_object(file_path, obj):
             pickle.dump(obj, file_obj)
     except Exception as e:
         logging.info("Exception occured while saving the objects into pickle file")
+        raise CustomException(e, sys)
+
+
+def evaluate_models(models, X_train, y_train, X_test, y_test):
+    report = {}
+    try:
+        for i in range(len(list(models))):
+            model = list(models.values())[i]
+            model.fit(X_train, y_train)
+
+            # Make Predictions
+            y_pred = model.predict(X_test)
+            test_model_score = r2_score(y_test, y_pred)
+            report[list(models.keys())[i]] = test_model_score
+
+        return report
+
+    except Exception as e:
+        raise CustomException(e, sys)
+
+
+def load_object(file_path):
+    try:
+        with open(file_path, "rb") as file_obj:
+            return pickle.load(file_obj)
+    except Exception as e:
+        logging.info("Exception Occured in load_object function utils")
         raise CustomException(e, sys)
